@@ -22,6 +22,10 @@
             android:name=".SiteActivity"
             android:label="SiteActivity" >
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="SettingsActivity" >
+        </activity>
     </application>
 
 </manifest>

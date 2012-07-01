@@ -3,6 +3,11 @@
     <string name="app_name">AndQuote</string>
     <string name="error_download_failed">Cannot access the API.</string>
 
+    <string name="mainactivity_menu_settings">Settings</string>
+    <string name="preferences_api">Api</string>
+    <string name="preferences_api_url">Api URL</string>
+    <string name="preferences_api_url_summary">The base URL of the OpenQuoteApi. Don not edit this unless you know what you are doing.</string>
+
     <string name="siteactivity_loading_quotes">Loading the quotes. Please wait...</string>
 
     <string name="siteactivity_button_latest">Latest</string>

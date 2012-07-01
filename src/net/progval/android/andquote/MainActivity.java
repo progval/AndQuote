@@ -21,9 +21,14 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class MainActivity extends Activity implements OnClickListener {
-    private String api_base = "http://djangoapps.progval.net/openquoteapi";
+    private static SharedPreferences settings; 
     private OpenQuoteApi api;
     private LinearLayout layout;
     
@@ -59,6 +64,7 @@ public class MainActivity extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main);
+        MainActivity.settings = PreferenceManager.getDefaultSharedPreferences(this);
         
         this.setTitle(R.string.app_name);
 
@@ -66,11 +72,30 @@ public class MainActivity extends Activity implements OnClickListener {
         this.layout.setOrientation(this.layout.VERTICAL);
         this.setContentView(this.layout);
         
-        this.api = new OpenQuoteApi(this.api_base);
+        this.api = new OpenQuoteApi(this.settings.getString("api.url", ""));
         try {
             this.api.get(new MainActivity.ProgressListener(), "/");
         } catch (MalformedURLException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.mainactivity_menu_settings:
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                this.startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -89,7 +114,6 @@ public class MainActivity extends Activity implements OnClickListener {
         Bundle bundle = new Bundle();
         bundle.putString("site_id", id);
         bundle.putString("site_name", button.getText().toString());
-        bundle.putString("api_base", this.api_base);
         intent.putExtras(bundle);
         this.startActivity(intent);
     }

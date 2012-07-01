@@ -32,9 +32,13 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public class SiteActivity extends ListActivity implements OnClickListener {
+    private static SharedPreferences settings; 
     private RelativeLayout layout;
     private LinearLayout navigation;
     private ListView quotesview;
@@ -56,13 +60,14 @@ public class SiteActivity extends ListActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extra = this.getIntent().getExtras();
+        SiteActivity.settings = PreferenceManager.getDefaultSharedPreferences(this);
         this.state = new SiteActivity.State();
         this.state.site_id = extra.getString("site_id");
         this.state.site_name = extra.getString("site_name");
         
         this.setTitle(this.state.site_name);
 
-        this.api = new OpenQuoteApi(extra.getString("api_base"));
+        this.api = new OpenQuoteApi(this.settings.getString("api.url", ""));
 
         this.setContentView(R.layout.siteactivity);
         this.layout = (RelativeLayout) this.findViewById(R.id.siteActivity);

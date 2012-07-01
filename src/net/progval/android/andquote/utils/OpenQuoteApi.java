@@ -134,10 +134,13 @@ public class OpenQuoteApi {
     }
     
     public OpenQuoteApi() {
-        this("http://djangoapps.progval.net/openquoteapi");
+        this("");
     }
     public OpenQuoteApi(String base_url) {
-        this.base_url = base_url;
+        if (base_url.equals(""))
+            this.base_url = "http://djangoapps.progval.net/openquoteapi";
+        else
+            this.base_url = base_url;
     }
     
     public void get(OpenQuoteApi.ProgressListener progress_listener, String url)
