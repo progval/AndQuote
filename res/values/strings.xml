@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndQuote</string>
+    <string name="error_download_failed">Cannot access the API.</string>
+
+    <string name="siteactivity_loading_quotes">Loading the quotes. Please wait...</string>
+
+    <string name="siteactivity_button_latest">Latest</string>
+    <string name="siteactivity_button_top">Top</string>
+    <string name="siteactivity_button_random">Random</string>
+    <string name="siteactivity_text_page">page:</string>
+    <string name="siteactivity_gotopage_dialog_title">Go to page</string>
+    <string name="siteactivity_gotopage_button_go">Go</string>
+    <string name="siteactivity_gotopage_button_cancel">Cancel</string>
+
+    <string name="siteactivity_context_copy">Copy to clipboard</string>
+    <string name="siteactivity_context_share">Share</string>
+    <string name="siteactivity_share_subject">Quote shared via OpenQuote.</string>
+    <string name="siteactivity_share_window_title">Share</string>
+
+</resources>
