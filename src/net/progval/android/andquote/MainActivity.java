@@ -23,7 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnClickListener {
-    private String api_base = "http://192.168.1.150:8000/openquoteapi";
+    private String api_base = "http://djangoapps.progval.net/openquoteapi";
     private OpenQuoteApi api;
     private LinearLayout layout;
     
