@@ -20,6 +20,7 @@
 
     <string name="siteactivity_context_copy">Copy to clipboard</string>
     <string name="siteactivity_context_share">Share</string>
+    <string name="siteactivity_context_moreinfo">More info</string>
     <string name="siteactivity_share_subject">Quote shared via OpenQuote.</string>
     <string name="siteactivity_share_window_title">Share</string>
 

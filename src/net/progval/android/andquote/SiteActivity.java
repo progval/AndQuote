@@ -1,6 +1,7 @@
 package net.progval.android.andquote;
 
 import net.progval.android.andquote.utils.OpenQuoteApi;
+import net.progval.android.andquote.QuoteActivity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -44,10 +45,11 @@ public class SiteActivity extends ListActivity implements OnClickListener {
     private ListView quotesview;
     private OpenQuoteApi api;
 
-    private ArrayList<String> quotes = new ArrayList<String>();
+    private ArrayList<String> quotesContent = new ArrayList<String>();
+    private ArrayList<OpenQuoteApi.Quote> quotes = new ArrayList<OpenQuoteApi.Quote>();
     private ArrayAdapter<String> quotesAdapter;
 
-    public class State {
+    public static class State {
         public String site_id, site_name;
         public String mode = "latest";
         public int page = 1;
@@ -102,7 +104,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
                 }
             });
     
-        this.quotesAdapter = new ArrayAdapter<String>(this, R.layout.quotewidget, this.quotes);
+        this.quotesAdapter = new ArrayAdapter<String>(this, R.layout.quotewidget, this.quotesContent);
         this.setListAdapter(this.quotesAdapter);
         this.loadQuotes();
         this.resetState();
@@ -118,14 +120,23 @@ public class SiteActivity extends ListActivity implements OnClickListener {
         switch (item.getItemId()) {
             case R.id.siteactivity_context_copy:
                 ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-                clipboard.setText(this.quotes.get(clickedQuote));
+                clipboard.setText(this.quotesContent.get(clickedQuote));
                 return true;
             case R.id.siteactivity_context_share:
                 Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, this.getResources().getString(R.string.siteactivity_share_subject));
-                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.quotes.get(clickedQuote));
+                shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, this.quotesContent.get(clickedQuote));
                 this.startActivity(Intent.createChooser(shareIntent, this.getResources().getString(R.string.siteactivity_share_window_title)));
+                return true;
+            case R.id.siteactivity_context_moreinfo:
+                Intent intent = new Intent(this, QuoteActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("site_id", this.state.site_id);
+                bundle.putString("site_name", this.state.site_name);
+                bundle.putString("quote", this.quotes.get(clickedQuote).serialize());
+                intent.putExtras(bundle);
+                this.startActivity(intent);
                 return true;
         }
         return false;
@@ -137,6 +148,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
         findViewById(R.id.gotopage).setEnabled(this.state.gotopage);
         ((EditText) findViewById(R.id.gotopage)).setText(String.valueOf(this.state.page));
         this.quotes.clear();
+        this.quotesContent.clear();
         this.quotesAdapter.notifyDataSetChanged();
     }
     public void resetState(JSONObject object) {
@@ -153,7 +165,8 @@ public class SiteActivity extends ListActivity implements OnClickListener {
     }
 
     public void showQuote(OpenQuoteApi.Quote quote) {
-        this.quotes.add(Html.fromHtml(quote.getContent()).toString());
+        this.quotes.add(quote);
+        this.quotesContent.add(Html.fromHtml(quote.getContent()).toString());
         this.quotesAdapter.notifyDataSetChanged();
     }
 

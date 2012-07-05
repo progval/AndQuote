@@ -36,16 +36,20 @@ public class OpenQuoteApi {
             NOTE, UPDOWN
         }
 
+        private int id;
         private String content;
         private int note, up, down;
         private ScoreType scoretype;
+        private String author, date;
 
-        public Quote(String content, int note) {
+        public Quote(int id, String content, int note) {
+            this.id = id;
             this.content = content;
             this.note = note;
             this.scoretype = Quote.ScoreType.NOTE;
         }
-        public Quote(String content, int up, int down) {
+        public Quote(int id, String content, int up, int down) {
+            this.id = id;
             this.content = content;
             this.up = up;
             this.down = down;
@@ -55,17 +59,28 @@ public class OpenQuoteApi {
         public Quote(JSONObject object) {
             try {
                 // Be sure to replace new lines after replacing < and >
+                this.id = ((Integer) object.get("id")).intValue();
                 this.content = ((String) object.get("content")).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br />");
-                if (object.has("note"))
+                if (object.has("note")) {
                     this.note = ((Integer) object.get("note")).intValue();
+                    this.scoretype = Quote.ScoreType.NOTE;
+                }
                 else {
                     this.up = ((Integer) object.get("up")).intValue();
                     this.down = ((Integer) object.get("down")).intValue();
+                    this.scoretype = Quote.ScoreType.UPDOWN;
                 }
+                if (object.has("author"))
+                    this.author = (String) object.get("author");
+                if (object.has("date") && object.get("date") != null)
+                    this.date = (String) object.get("date");
             }
             catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+        public int getId() {
+            return this.id;
         }
         public String getContent() {
             return this.content;
@@ -81,6 +96,77 @@ public class OpenQuoteApi {
         }
         public int getDown() {
             return this.down;
+        }
+        public String getScore() {
+            switch (this.scoretype) {
+                case UPDOWN:
+                    return String.format("+%d -%d", this.up, this.down);
+                case NOTE:
+                    return String.format("%d", this.note);
+                default:
+                    return "";
+            }
+        }
+        public String getAuthor() {
+            return this.author;
+        }
+        public String getDate() {
+            return this.date;
+        }
+
+        public String serialize() {
+            return String.format("%d|%d|%d|%d|%d|%s", this.id, this.scoretype.ordinal(), this.note, this.up, this.down, this.content);
+        }
+        public static Quote unserialize(String string) {
+            String[] parts = string.split("\\|",6);
+            Integer id = Integer.parseInt(parts[0]), type = Integer.parseInt(parts[1]); // Java sucks
+            switch (Quote.ScoreType.values()[type.intValue()]) {
+                case UPDOWN:
+                    Integer up = Integer.parseInt(parts[3]), down = Integer.parseInt(parts[4]); // Java sucks
+                    return new Quote(id.intValue(), parts[5], up.intValue(), down.intValue());
+                case NOTE:
+                    Integer note = Integer.parseInt(parts[2]); // Java sucks
+                    return new Quote(id.intValue(), parts[5], note.intValue());
+                default:
+                    return null;
+            }
+        }
+    }
+
+    public static class Comment {
+        private String content, author;
+        private Comment[] replies;
+        public Comment(JSONObject object) {
+            try {
+                this.content = (String) object.get("content");
+                this.author = (String) object.get("author");
+                JSONArray replies = (JSONArray) object.get("replies");
+                this.replies = Comment.parseComments(replies);
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        public static Comment[] parseComments(JSONArray array) {
+            try {
+                Comment[] comments = new Comment[array.length()];
+                for (int i=0; i<array.length(); i++)
+                    comments[i] = new Comment((JSONObject) array.get(i));
+                return comments;
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+                return new Comment[0];
+            }
+        }
+        public String getContent() {
+            return this.content;
+        }
+        public String getAuthor() {
+            return this.author;
+        }
+        public Comment[] getReplies() {
+            return this.replies;
         }
     }
     

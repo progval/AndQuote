@@ -23,6 +23,10 @@
             android:label="SiteActivity" >
         </activity>
         <activity
+            android:name=".QuoteActivity"
+            android:label="QuoteActivity" >
+        </activity>
+        <activity
             android:name=".SettingsActivity"
             android:label="SettingsActivity" >
         </activity>
