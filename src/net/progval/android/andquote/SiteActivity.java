@@ -149,6 +149,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
         ((EditText) findViewById(R.id.gotopage)).setText(String.valueOf(this.state.page));
         this.quotes.clear();
         this.quotesContent.clear();
+        this.setContentView(layout);
         this.quotesAdapter.notifyDataSetChanged();
     }
     public void resetState(JSONObject object) {
