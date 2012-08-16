@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ScrollView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -68,9 +69,19 @@ public class MainActivity extends Activity implements OnClickListener {
         
         this.setTitle(R.string.app_name);
 
+        LinearLayout layout = new LinearLayout(this);
+        ScrollView scrollview = new ScrollView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                    LinearLayout.LayoutParams.FILL_PARENT,
+                                    LinearLayout.LayoutParams.FILL_PARENT);
+        scrollview.setLayoutParams(params);
+        layout.addView(scrollview);
+        this.setContentView(layout);
+
         this.layout = new LinearLayout(this);
         this.layout.setOrientation(this.layout.VERTICAL);
-        this.setContentView(this.layout);
+        scrollview.addView(this.layout);
+        this.layout.setOrientation(this.layout.VERTICAL);
         
         this.api = new OpenQuoteApi(this.settings.getString("api.url", ""));
         try {
