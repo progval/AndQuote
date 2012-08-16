@@ -54,7 +54,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
         public String mode = "latest";
         public int page = 1;
         public String type;
-        public boolean previous=false, next=false, gotopage=false;
+        public boolean previous=false, next=false, gotopage=false, with_image;
     }
     private State state;
 
@@ -66,6 +66,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
         this.state = new SiteActivity.State();
         this.state.site_id = extra.getString("site_id");
         this.state.site_name = extra.getString("site_name");
+        this.state.with_image = extra.getBoolean("with_image");
         
         this.setTitle(this.state.site_name);
 

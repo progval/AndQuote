@@ -33,28 +33,36 @@ public class OpenQuoteApi {
 
     public static class Quote {
         public static enum ScoreType {
-            NOTE, UPDOWN
+            NOTE, UPDOWN, NONE
         }
 
         private int id;
         private String content;
         private int note, up, down;
         private ScoreType scoretype;
-        private String author, date;
+        private String author, date, image_url;
 
-        public Quote(int id, String content, int note) {
+        public Quote(int id, String content, String image_url) {
+            this.id = id;
+            this.content = content;
+            this.scoretype = Quote.ScoreType.NONE;
+            this.image_url = image_url;
+        }
+        public Quote(int id, String content, int note, String image_url) {
             this.id = id;
             this.content = content;
             this.note = note;
             this.scoretype = Quote.ScoreType.NOTE;
+            this.image_url = image_url;
         }
-        public Quote(int id, String content, int up, int down) {
+        public Quote(int id, String content, int up, int down, String image_url) {
             this.id = id;
             this.content = content;
             this.up = up;
             this.down = down;
             this.note = up - down;
             this.scoretype = Quote.ScoreType.UPDOWN;
+            this.image_url = image_url;
         }
         public Quote(JSONObject object) {
             try {
@@ -65,15 +73,21 @@ public class OpenQuoteApi {
                     this.note = ((Integer) object.get("note")).intValue();
                     this.scoretype = Quote.ScoreType.NOTE;
                 }
-                else {
+                else if (object.has("up") && object.has("down")) {
                     this.up = ((Integer) object.get("up")).intValue();
                     this.down = ((Integer) object.get("down")).intValue();
                     this.scoretype = Quote.ScoreType.UPDOWN;
+                }
+                else {
+                    this.scoretype = Quote.ScoreType.NONE;
                 }
                 if (object.has("author"))
                     this.author = (String) object.get("author");
                 if (object.has("date") && object.get("date") != null)
                     this.date = (String) object.get("date");
+                if (object.has("image")) {
+                    this.image_url = (String) object.get("image");
+                }
             }
             catch (JSONException e) {
                 e.printStackTrace();
@@ -113,20 +127,26 @@ public class OpenQuoteApi {
         public String getDate() {
             return this.date;
         }
+        public String getImageUrl() {
+            return this.image_url;
+        }
 
         public String serialize() {
-            return String.format("%d|%d|%d|%d|%d|%s", this.id, this.scoretype.ordinal(), this.note, this.up, this.down, this.content);
+            return String.format("%d|%d|%d|%d|%d|%s|%s", this.id, this.scoretype.ordinal(), this.note, this.up, this.down, this.image_url, this.content);
         }
         public static Quote unserialize(String string) {
-            String[] parts = string.split("\\|",6);
+            String[] parts = string.split("\\|",7);
             Integer id = Integer.parseInt(parts[0]), type = Integer.parseInt(parts[1]); // Java sucks
+            String image_url = parts[5];
             switch (Quote.ScoreType.values()[type.intValue()]) {
                 case UPDOWN:
                     Integer up = Integer.parseInt(parts[3]), down = Integer.parseInt(parts[4]); // Java sucks
-                    return new Quote(id.intValue(), parts[5], up.intValue(), down.intValue());
+                    return new Quote(id.intValue(), parts[6], up.intValue(), down.intValue(), image_url);
                 case NOTE:
                     Integer note = Integer.parseInt(parts[2]); // Java sucks
-                    return new Quote(id.intValue(), parts[5], note.intValue());
+                    return new Quote(id.intValue(), parts[6], note.intValue(), image_url);
+                case NONE:
+                    return new Quote(id.intValue(), parts[6], image_url);
                 default:
                     return null;
             }
