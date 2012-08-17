@@ -39,7 +39,6 @@ public class QuoteActivity extends Activity {
         this.state.site_id = extra.getString("site_id");
         this.state.site_name = extra.getString("site_name");
         this.quote = OpenQuoteApi.Quote.unserialize(extra.getString("quote"));
-        Log.d("AndQuote", String.format("%d", this.quote.getId()));
         
         this.setTitle(this.state.site_name + " - " + this.quote.getId());
 
@@ -47,7 +46,7 @@ public class QuoteActivity extends Activity {
 
         LinearLayout layout = new LinearLayout(this);
 
-        if (quote.getImageUrl() != null) {
+        if (!quote.getImageUrl().equals("null")) {
             this.layout = layout;
             this.setContentView(layout);
         }
