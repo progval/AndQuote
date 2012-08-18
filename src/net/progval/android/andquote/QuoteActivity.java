@@ -213,15 +213,17 @@ public class QuoteActivity extends Activity implements OnClickListener {
         this.quote = quote;
     }
     public void setImage(String url) {
-        this.imageview = new WebView(this);
+        if (this.imageview == null) {
+            this.imageview = new WebView(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                        LinearLayout.LayoutParams.FILL_PARENT,
+                                        LinearLayout.LayoutParams.FILL_PARENT);
+            this.imageview.setLayoutParams(params);
+            this.imageview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+            this.setContentView(this.layout); // Kick the scrollview out
+            this.layout.addView(this.imageview);
+        }
         this.imageview.loadUrl(url);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.FILL_PARENT,
-                                    LinearLayout.LayoutParams.FILL_PARENT);
-        this.imageview.setLayoutParams(params);
-        this.imageview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        this.setContentView(this.layout); // Kick the scrollview out
-        this.layout.addView(this.imageview);
     }
     public void renderComments(OpenQuoteApi.Comment[] comments) {
         this.comments = new LinearLayout(this);
