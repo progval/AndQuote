@@ -40,28 +40,31 @@ public class OpenQuoteApi {
         private String content;
         private int note, up, down;
         private ScoreType scoretype;
-        private String author, date, image_url;
+        private String author, date, url, image_url;
 
-        public Quote(int id, String content, String image_url) {
+        public Quote(int id, String content, String url, String image_url) {
             this.id = id;
             this.content = content;
             this.scoretype = Quote.ScoreType.NONE;
+            this.url = url;
             this.image_url = image_url;
         }
-        public Quote(int id, String content, int note, String image_url) {
+        public Quote(int id, String content, int note, String url, String image_url) {
             this.id = id;
             this.content = content;
             this.note = note;
             this.scoretype = Quote.ScoreType.NOTE;
+            this.url = url;
             this.image_url = image_url;
         }
-        public Quote(int id, String content, int up, int down, String image_url) {
+        public Quote(int id, String content, int up, int down, String url, String image_url) {
             this.id = id;
             this.content = content;
             this.up = up;
             this.down = down;
             this.note = up - down;
             this.scoretype = Quote.ScoreType.UPDOWN;
+            this.url = url;
             this.image_url = image_url;
         }
         public Quote(JSONObject object) {
@@ -85,6 +88,9 @@ public class OpenQuoteApi {
                     this.author = (String) object.get("author");
                 if (object.has("date") && object.get("date") != null)
                     this.date = (String) object.get("date");
+                if (object.has("url")) {
+                    this.url = (String) object.get("url");
+                }
                 if (object.has("image")) {
                     this.image_url = (String) object.get("image");
                 }
@@ -127,26 +133,30 @@ public class OpenQuoteApi {
         public String getDate() {
             return this.date;
         }
+        public String getUrl() {
+            return this.url;
+        }
         public String getImageUrl() {
             return this.image_url;
         }
 
         public String serialize() {
-            return String.format("%d|%d|%d|%d|%d|%s|%s", this.id, this.scoretype.ordinal(), this.note, this.up, this.down, this.image_url, this.content);
+            return String.format("%d|%d|%d|%d|%d|%s|%s|%s", this.id, this.scoretype.ordinal(), this.note, this.up, this.down, this.image_url, this.image_url, this.content);
         }
         public static Quote unserialize(String string) {
             String[] parts = string.split("\\|",7);
             Integer id = Integer.parseInt(parts[0]), type = Integer.parseInt(parts[1]); // Java sucks
-            String image_url = parts[5];
+            String url = parts[5];
+            String image_url = parts[6];
             switch (Quote.ScoreType.values()[type.intValue()]) {
                 case UPDOWN:
                     Integer up = Integer.parseInt(parts[3]), down = Integer.parseInt(parts[4]); // Java sucks
-                    return new Quote(id.intValue(), parts[6], up.intValue(), down.intValue(), image_url);
+                    return new Quote(id.intValue(), parts[7], up.intValue(), down.intValue(), url, image_url);
                 case NOTE:
                     Integer note = Integer.parseInt(parts[2]); // Java sucks
-                    return new Quote(id.intValue(), parts[6], note.intValue(), image_url);
+                    return new Quote(id.intValue(), parts[7], note.intValue(), url, image_url);
                 case NONE:
-                    return new Quote(id.intValue(), parts[6], image_url);
+                    return new Quote(id.intValue(), parts[7], url, image_url);
                 default:
                     return null;
             }

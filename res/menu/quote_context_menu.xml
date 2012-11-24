@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/siteactivity_context_copy" android:title="@string/siteactivity_context_copy"></item>
+    <item android:id="@+id/siteactivity_context_copy_content" android:title="@string/siteactivity_context_copy_content"></item>
+    <item android:id="@+id/siteactivity_context_copy_link" android:title="@string/siteactivity_context_copy_link"></item>
     <item android:id="@+id/siteactivity_context_share" android:title="@string/siteactivity_context_share"></item>
     <item android:id="@+id/siteactivity_context_moreinfo" android:title="@string/siteactivity_context_moreinfo"></item>
 </menu>

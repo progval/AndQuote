@@ -21,7 +21,8 @@
     <string name="siteactivity_gotopage_button_go">Go</string>
     <string name="siteactivity_gotopage_button_cancel">Cancel</string>
 
-    <string name="siteactivity_context_copy">Copy to clipboard</string>
+    <string name="siteactivity_context_copy_content">Copy content to clipboard</string>
+    <string name="siteactivity_context_copy_link">Copy link to clipboard</string>
     <string name="siteactivity_context_share">Share</string>
     <string name="siteactivity_context_moreinfo">More info</string>
     <string name="siteactivity_share_subject">Quote shared via OpenQuote.</string>

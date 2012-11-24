@@ -118,10 +118,13 @@ public class SiteActivity extends ListActivity implements OnClickListener {
     }
     public boolean onContextItemSelected(MenuItem item) {
         int clickedQuote = ((AdapterContextMenuInfo)item.getMenuInfo()).position;
+        ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
         switch (item.getItemId()) {
-            case R.id.siteactivity_context_copy:
-                ClipboardManager clipboard = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+            case R.id.siteactivity_context_copy_content:
                 clipboard.setText(this.quotesContent.get(clickedQuote));
+                return true;
+            case R.id.siteactivity_context_copy_link:
+                clipboard.setText(this.quotes.get(clickedQuote).getUrl());
                 return true;
             case R.id.siteactivity_context_share:
                 Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
