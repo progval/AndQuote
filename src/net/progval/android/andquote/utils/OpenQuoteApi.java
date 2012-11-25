@@ -144,7 +144,7 @@ public class OpenQuoteApi {
             return String.format("%d|%d|%d|%d|%d|%s|%s|%s", this.id, this.scoretype.ordinal(), this.note, this.up, this.down, this.image_url, this.image_url, this.content);
         }
         public static Quote unserialize(String string) {
-            String[] parts = string.split("\\|",7);
+            String[] parts = string.split("\\|",8);
             Integer id = Integer.parseInt(parts[0]), type = Integer.parseInt(parts[1]); // Java sucks
             String url = parts[5];
             String image_url = parts[6];
