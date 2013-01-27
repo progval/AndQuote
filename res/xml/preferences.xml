@@ -4,6 +4,7 @@
         <EditTextPreference android:title="@string/preferences_api_url" android:key="api.url" android:summary="@string/preferences_api_url_summary" android:defaultValue="http://djangoapps.progval.net/openquoteapi" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences_nav">
-        <CheckBoxPreference android:title="@string/preferences_nav_img_enable" android:key="nav.img_enable" android:summary="@string/preferences_nav_img_enable_summary" android:defaultValue="False" />
+        <CheckBoxPreference android:title="@string/preferences_nav_quote_enable" android:key="nav.quote.enable" android:summary="@string/preferences_nav_quote_enable_summary" android:defaultValue="False" />
+        <CheckBoxPreference android:title="@string/preferences_nav_quote_img_enable" android:key="nav.quote.img_enable" android:summary="@string/preferences_nav_quote_img_enable_summary" android:defaultValue="True" />
     </PreferenceCategory>
 </PreferenceScreen>

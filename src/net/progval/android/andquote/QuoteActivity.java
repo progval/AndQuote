@@ -71,11 +71,19 @@ public class QuoteActivity extends Activity implements OnClickListener {
         }
         this.layout.setOrientation(this.layout.VERTICAL);
 
-        if (!quote.getImageUrl().equals("null") &&
-                this.settings.getBoolean("nav.img_enable", false))
-            // As images cannot be rendered in a list, it is useful to switch
-            // from a "quote" to another.
-            this.inflateNavigation();
+        Log.d("AndQuote", quote.getImageUrl());
+        Log.d("AndQuote", Boolean.valueOf(this.settings.getBoolean("nav.quote.enable", false)).toString());
+        Log.d("AndQuote", Boolean.valueOf(this.settings.getBoolean("nav.quote.img_enable", true)).toString());
+        if (quote.getImageUrl().equals("null")) {
+            Log.d("AndQuote", "one");
+            if (this.settings.getBoolean("nav.quote.enable", false))
+                this.inflateNavigation();
+        }
+        else {
+            Log.d("AndQuote", "one");
+            if (this.settings.getBoolean("nav.quote.img_enable", true))
+                this.inflateNavigation();
+        }
 
         this.contentview = new TextView(this);
         this.contentview.setText(Html.fromHtml(this.quote.getContent()));

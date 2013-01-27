@@ -8,8 +8,10 @@
     <string name="preferences_api_url">Api URL</string>
     <string name="preferences_api_url_summary">The base URL of the OpenQuoteApi. Don not edit this unless you know what you are doing.</string>
     <string name="preferences_nav">Navigation</string>
-    <string name="preferences_nav_img_enable">Enabled for images</string>
-    <string name="preferences_nav_img_enable_summary">Determines whether or not navigation controls will be displayed for websites using images (such as xkcd).</string>
+    <string name="preferences_nav_quote_img_enable">Enabled for quotes with images</string>
+    <string name="preferences_nav_quote_img_enable_summary">Determines whether or not navigation controls will be displayed for websites using images (such as xkcd).</string>
+    <string name="preferences_nav_quote_enable">Enabled for quotes with no image</string>
+    <string name="preferences_nav_quote_enable_summary">Determines whether or not navigation controls will be displayed for websites not using images.</string>
 
     <string name="siteactivity_loading_quotes">Loading the quotes. Please wait...</string>
 
