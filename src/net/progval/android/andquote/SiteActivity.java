@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import android.net.Uri;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ListView;
@@ -125,6 +126,10 @@ public class SiteActivity extends ListActivity implements OnClickListener {
                 return true;
             case R.id.siteactivity_context_copy_link:
                 clipboard.setText(this.quotes.get(clickedQuote).getUrl());
+                return true;
+            case R.id.siteactivity_context_open_link:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.quotes.get(clickedQuote).getUrl()));
+                startActivity(browserIntent);
                 return true;
             case R.id.siteactivity_context_share:
                 Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
