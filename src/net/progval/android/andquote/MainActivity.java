@@ -40,7 +40,7 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
         public void onSuccess(String file) {
-            OpenQuoteApi.Site[] sites = OpenQuoteApi.Site.get_sites(file);
+            OpenQuoteApi.Site[] sites = OpenQuoteApi.Site.parse_sites(file);
             for (int i=0; i<sites.length && sites[i]!=null; i++)
                 MainActivity.this.registerSite(sites[i]);
         }

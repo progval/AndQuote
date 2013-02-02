@@ -38,7 +38,7 @@ public class OpenQuoteApi {
             this.name = name;
         }
 
-        public static Site[] get_sites(String file) {
+        public static Site[] parse_sites(String file) {
             Site[] sites = {};
             JSONArray object;
             try {
