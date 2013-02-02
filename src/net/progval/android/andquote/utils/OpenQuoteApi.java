@@ -347,8 +347,26 @@ public class OpenQuoteApi {
             e.printStackTrace();
         }
     }
-    public void getURL(OpenQuoteApi.ProgressListener progress_listener, OpenQuoteApi.State state) {
-        this.safeGet(progress_listener,
+    public void getURL(final OpenQuoteApi.ProgressListener progress_listener, OpenQuoteApi.State state) {
+        class UrlLoader implements ProgressListener {
+            public void onProgressUpdate(int progress) {
+                progress_listener.onProgressUpdate(progress);
+            }
+            public void onFail(int status_message) {
+                progress_listener.onFail(status_message);
+            }
+            public void onSuccess(String file) {
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
+                    progress_listener.onSuccess((String) object.get("url"));
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        this.safeGet(new UrlLoader(),
                 String.format("/state/url?site=%s&mode=%s&type=%s&page=%s",
                     state.site_id, state.mode, state.type, state.page));
     }
