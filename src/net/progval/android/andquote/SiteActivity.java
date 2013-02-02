@@ -177,18 +177,11 @@ public class SiteActivity extends ListActivity implements OnClickListener {
                 Toast.makeText(SiteActivity.this, status_message, Toast.LENGTH_LONG).show();
             }
             public void onSuccess(String file) {
-                try {
-                    JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
-                    JSONArray quotes = (JSONArray) object.get("quotes");
-
-                    SiteActivity.this.resetState(new OpenQuoteApi.State((JSONObject) object.get("state")));
-                    for (int i=0; i<quotes.length(); i++) {
-                        JSONObject quote = (JSONObject) quotes.get(i);
-                        SiteActivity.this.showQuote(new OpenQuoteApi.Quote(quote));
-                    }
-                }
-                catch (JSONException e) {
-                    e.printStackTrace();
+                OpenQuoteApi.Quote[] quotes = OpenQuoteApi.Quote.parse_quotes(file, SiteActivity.this.state);
+                Log.d("AndQuote", String.valueOf(quotes.length));
+                SiteActivity.this.resetState();
+                for (int i=0; i<quotes.length && quotes[i] != null; i++) {
+                    SiteActivity.this.showQuote(quotes[i]);
                 }
                 dialog.dismiss();
             }
