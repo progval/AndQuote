@@ -60,8 +60,35 @@ public class OpenQuoteApi {
             }
             return sites;
         }
-
     }
+
+    public static class State {
+        public String site_id, site_name;
+        public String mode = "latest";
+        public int page = 1;
+        public String type;
+        public boolean previous=false, next=false, gotopage=false;
+
+        public State() {}
+        public State(JSONObject object) {
+            try {
+                this.previous = ((Boolean) object.get("previous")).booleanValue();
+                this.next = ((Boolean) object.get("next")).booleanValue();
+                this.gotopage = ((Boolean) object.get("gotopage")).booleanValue();
+                this.page = ((Integer) object.get("page")).intValue();
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        public void update(State other) {
+            this.previous = other.previous;
+            this.next = other.next;
+            this.gotopage = other.gotopage;
+            this.page = other.page;
+        }
+    }
+
     public static class Quote {
         public static enum ScoreType {
             NOTE, UPDOWN, NONE
@@ -302,7 +329,7 @@ public class OpenQuoteApi {
             e.printStackTrace();
         }
     }
-    public void getURL(OpenQuoteApi.ProgressListener progress_listener, SiteActivity.State state) {
+    public void getURL(OpenQuoteApi.ProgressListener progress_listener, OpenQuoteApi.State state) {
         this.safeGet(progress_listener,
                 String.format("/state/url?site=%s&mode=%s&type=%s&page=%s",
                     state.site_id, state.mode, state.type, state.page));

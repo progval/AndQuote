@@ -50,21 +50,14 @@ public class SiteActivity extends ListActivity implements OnClickListener {
     private ArrayList<OpenQuoteApi.Quote> quotes = new ArrayList<OpenQuoteApi.Quote>();
     private ArrayAdapter<String> quotesAdapter;
 
-    public static class State {
-        public String site_id, site_name;
-        public String mode = "latest";
-        public int page = 1;
-        public String type;
-        public boolean previous=false, next=false, gotopage=false;
-    }
-    private State state;
+    private OpenQuoteApi.State state;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extra = this.getIntent().getExtras();
         SiteActivity.settings = PreferenceManager.getDefaultSharedPreferences(this);
-        this.state = new SiteActivity.State();
+        this.state = new OpenQuoteApi.State();
         this.state.site_id = extra.getString("site_id");
         this.state.site_name = extra.getString("site_name");
         
@@ -160,16 +153,8 @@ public class SiteActivity extends ListActivity implements OnClickListener {
         this.setContentView(layout);
         this.quotesAdapter.notifyDataSetChanged();
     }
-    public void resetState(JSONObject object) {
-        try {
-            this.state.previous = ((Boolean) object.get("previous")).booleanValue();
-            this.state.next = ((Boolean) object.get("next")).booleanValue();
-            this.state.gotopage = ((Boolean) object.get("gotopage")).booleanValue();
-            this.state.page = ((Integer) object.get("page")).intValue();
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public void resetState(OpenQuoteApi.State state) {
+        this.state.update(state);
         this.resetState();
     }
 
@@ -196,7 +181,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
                     JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
                     JSONArray quotes = (JSONArray) object.get("quotes");
 
-                    SiteActivity.this.resetState((JSONObject) object.get("state"));
+                    SiteActivity.this.resetState(new OpenQuoteApi.State((JSONObject) object.get("state")));
                     for (int i=0; i<quotes.length(); i++) {
                         JSONObject quote = (JSONObject) quotes.get(i);
                         SiteActivity.this.showQuote(new OpenQuoteApi.Quote(quote));
