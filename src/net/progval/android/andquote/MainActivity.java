@@ -3,11 +3,6 @@ package net.progval.android.andquote;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 import net.progval.android.andquote.utils.OpenQuoteApi;
 import android.app.Activity;
 import android.content.Intent;
@@ -45,18 +40,9 @@ public class MainActivity extends Activity implements OnClickListener {
         }
 
         public void onSuccess(String file) {
-            try {
-                JSONArray object = (JSONArray) new JSONTokener(file).nextValue();
-                
-                for (int i=0; i<object.length(); i++) {
-                    JSONObject site = (JSONObject) object.get(i);
-                    MainActivity.this.registerSite((String) site.get("id"),
-                        (String) site.get("name"));
-                }
-                
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            OpenQuoteApi.Site[] sites = OpenQuoteApi.Site.get_sites(file);
+            for (int i=0; i<sites.length && sites[i]!=null; i++)
+                MainActivity.this.registerSite(sites[i]);
         }
         
     }
@@ -110,10 +96,10 @@ public class MainActivity extends Activity implements OnClickListener {
         }
     }
 
-    public void registerSite(String id, String name) {
+    public void registerSite(OpenQuoteApi.Site site) {
         Button button = new Button(this);
-        button.setText(name);
-        button.setTag(id);
+        button.setText(site.name);
+        button.setTag(site.id);
         button.setOnClickListener(this);
         this.layout.addView(button);
     }

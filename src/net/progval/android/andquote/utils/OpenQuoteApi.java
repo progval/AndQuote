@@ -31,6 +31,37 @@ public class OpenQuoteApi {
         public void onSuccess(String file);
     }
 
+    public static class Site {
+        public String id, name;
+        public Site(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public static Site[] get_sites(String file) {
+            Site[] sites = {};
+            JSONArray object;
+            try {
+                object = (JSONArray) new JSONTokener(file).nextValue();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return sites;
+            }
+            sites = new Site[object.length()];
+
+            for (int i=0; i<object.length(); i++) {
+                try {
+                    JSONObject site = (JSONObject) object.get(i);
+                    sites[i] = new Site((String) site.get("id"),
+                            (String) site.get("name"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return sites;
+        }
+
+    }
     public static class Quote {
         public static enum ScoreType {
             NOTE, UPDOWN, NONE
