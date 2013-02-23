@@ -2,6 +2,7 @@ package net.progval.android.andquote;
 
 import java.net.MalformedURLException;
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.io.InputStream;
 
 import net.progval.android.andquote.utils.OpenQuoteApi;
@@ -17,8 +18,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.Toast;
+import android.widget.BaseAdapter;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.view.MenuItem;
 import android.view.MenuInflater;
 import android.content.SharedPreferences;
@@ -27,7 +31,8 @@ import android.preference.PreferenceManager;
 public class MainActivity extends Activity implements OnClickListener {
     private static SharedPreferences settings; 
     private OpenQuoteApi api;
-    private LinearLayout layout;
+    private GridView gridview;
+    ArrayList<View> buttons = new ArrayList<View>();
     
     private class ProgressListener implements OpenQuoteApi.ProgressListener {
 
@@ -47,6 +52,23 @@ public class MainActivity extends Activity implements OnClickListener {
         }
         
     }
+    public class CustomAdapter extends BaseAdapter {
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return MainActivity.this.buttons.get(position);
+        }
+        public final int getCount() {
+            return MainActivity.this.buttons.size();
+        }
+
+        public final Object getItem(int position) {
+            return MainActivity.this.buttons.get(position);
+        }
+
+        public final long getItemId(int position) {
+            return position;
+        }
+    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,18 +79,13 @@ public class MainActivity extends Activity implements OnClickListener {
         this.setTitle(R.string.app_name);
 
         LinearLayout layout = new LinearLayout(this);
-        ScrollView scrollview = new ScrollView(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.FILL_PARENT,
-                                    LinearLayout.LayoutParams.FILL_PARENT);
-        scrollview.setLayoutParams(params);
-        layout.addView(scrollview);
         this.setContentView(layout);
 
-        this.layout = new LinearLayout(this);
-        this.layout.setOrientation(this.layout.VERTICAL);
-        scrollview.addView(this.layout);
-        this.layout.setOrientation(this.layout.VERTICAL);
+        this.gridview = new GridView(this);
+        layout.addView(this.gridview);
+        this.gridview.setAdapter(new CustomAdapter());
+        this.gridview.setColumnWidth(200);
+        this.gridview.setNumColumns(-1);
         
         this.api = new OpenQuoteApi(this.settings.getString("api.url", ""));
         try {
@@ -102,7 +119,7 @@ public class MainActivity extends Activity implements OnClickListener {
         button.setText(site.name);
         button.setTag(site.id);
         button.setOnClickListener(this);
-        this.layout.addView(button);
+        this.buttons.add(button);
     }
     
     public void onClick(View view) {
