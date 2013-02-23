@@ -174,6 +174,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
             }
             public void onSuccess(String file) {
                 OpenQuoteApi.Quote[] quotes = OpenQuoteApi.Quote.parse_quotes(file, SiteActivity.this.state);
+                Log.d("AndQuote", String.valueOf(quotes.length));
                 SiteActivity.this.resetState();
                 for (int i=0; i<quotes.length && quotes[i] != null; i++) {
                     SiteActivity.this.showQuote(quotes[i]);
@@ -191,8 +192,14 @@ public class SiteActivity extends ListActivity implements OnClickListener {
                 dialog.dismiss();
                 Toast.makeText(SiteActivity.this, status_message, Toast.LENGTH_LONG).show();
             }
-            public void onSuccess(String url) {
-                api.safeGet(new QuoteRenderer(this.api), url);
+            public void onSuccess(String file) {
+                try {
+                    JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
+                    api.safeGet(new QuoteRenderer(this.api), (String) object.get("url"));
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         this.api.getURL(new QuoteLoader(this.api), this.state);
