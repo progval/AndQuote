@@ -7,4 +7,7 @@
         <CheckBoxPreference android:title="@string/preferences_nav_quote_enable" android:key="nav.quote.enable" android:summary="@string/preferences_nav_quote_enable_summary" android:defaultValue="False" />
         <CheckBoxPreference android:title="@string/preferences_nav_quote_img_enable" android:key="nav.quote.img_enable" android:summary="@string/preferences_nav_quote_img_enable_summary" android:defaultValue="True" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_home">
+        <CheckBoxPreference android:title="@string/preferences_home_fetchimages" android:key="home.fetchimages" android:summary="@string/preferences_home_fetchimages_summary" android:defaultValue="True" />
+    </PreferenceCategory>
 </PreferenceScreen>

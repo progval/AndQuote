@@ -61,6 +61,9 @@ public class OpenQuoteApi {
             }
             return sites;
         }
+        public String get_logo_url() {
+            return "/" + this.id + "/logo.png";
+        }
     }
 
     public static class State {

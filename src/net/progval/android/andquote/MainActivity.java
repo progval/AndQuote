@@ -7,6 +7,9 @@ import java.io.InputStream;
 
 import net.progval.android.andquote.utils.OpenQuoteApi;
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,8 +53,8 @@ public class MainActivity extends Activity implements OnClickListener {
             for (int i=0; i<sites.length && sites[i]!=null; i++)
                 MainActivity.this.registerSite(sites[i]);
         }
-        
     }
+
     public class CustomAdapter extends BaseAdapter {
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -115,10 +118,28 @@ public class MainActivity extends Activity implements OnClickListener {
     }
 
     public void registerSite(OpenQuoteApi.Site site) {
-        Button button = new Button(this);
+        final Button button = new Button(this);
         button.setText(site.name);
         button.setTag(site.id);
         button.setOnClickListener(this);
+        button.setHeight(125);
+        if (this.settings.getBoolean("home.fetchimages", true)) {
+            class ProgressListener implements OpenQuoteApi.ProgressListener {
+
+                public void onProgressUpdate(int progress) {
+                }
+
+                public void onFail(int status_message) {
+                }
+
+                public void onSuccess(InputStream stream) {
+                    Bitmap img = BitmapFactory.decodeStream(stream);
+                    BitmapDrawable drawable = new BitmapDrawable(img);
+                    button.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
+                }
+            }
+            this.api.safeGet(new ProgressListener(), site.get_logo_url());
+        }
         this.buttons.add(button);
     }
     
