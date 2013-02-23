@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AndQuote</string>
+
+    <string name="aboutactivity_title">À propos</string>
+    <string name="aboutactivity_license">AndQuote est un logiciel libre, selon les termes de la licence BSD 3-clauses..</string>
+    <string name="aboutactivity_author">Développé par : Valentin Lorentz</string>
+    <string name="aboutactivity_translator">Traduction française par : Valentin Lorentz</string>
+    <string name="aboutactivity_runningversion">Vous utilisez actuellement la version %s</string>
+    <string name="aboutactivity_latestversion">La dernière version disponible en ligne est : %s</string>
+
+    <string name="error_download_failed">Impossible d\'accéder à l\'API, ou une erreur est survenue.</string>
+
+    <string name="mainactivity_menu_settings">Configuration</string>
+    <string name="mainactivity_menu_about">À propos</string>
+    <string name="preferences_api">Api</string>
+    <string name="preferences_api_url">URL de l\'API</string>
+    <string name="preferences_api_url_summary">L\'URL de base d\'OpenQuoteApi. Ne pas modifier à moins de savoir ce que vous faites.</string>
+    <string name="preferences_home">Écran d\'accueil</string>
+    <string name="preferences_home_fetchimages">Afficher les images</string>
+    <string name="preferences_home_fetchimages_summary">Détermine si les logos des sites web seront affichés sur l\'écran d\'accueil.</string>
+    <string name="preferences_nav">Navigation</string>
+    <string name="preferences_nav_quote_img_enable">Activée pour les sites avec des images</string>
+    <string name="preferences_nav_quote_img_enable_summary">Détermine si les boutons de navigation seront affichés pour les sites affichant des images (comme xkcd).</string>
+    <string name="preferences_nav_quote_enable">Activée pour les sites sans image</string>
+    <string name="preferences_nav_quote_enable_summary">Détermine si les boutons de navigation seront affichés pour les sites n\'affichant pas d\'image.</string>
+
+    <string name="siteactivity_loading_quotes">Chargement des citation. Veuillez patienter...</string>
+
+    <string name="siteactivity_button_latest">Dernières</string>
+    <string name="siteactivity_button_top">Top</string>
+    <string name="siteactivity_button_random">Aléatoires</string>
+    <string name="siteactivity_text_page">page:</string>
+    <string name="siteactivity_gotopage_dialog_title">Aller à la page</string>
+    <string name="siteactivity_gotopage_button_go">Go</string>
+    <string name="siteactivity_gotopage_button_cancel">Annuler</string>
+
+    <string name="siteactivity_context_copy_content">Copier le contenu dans le presse-papier</string>
+    <string name="siteactivity_context_copy_link">Copier le lien dans le presse-papier</string>
+    <string name="siteactivity_context_open_link">Afficher la citation dans le navigateur</string>
+    <string name="siteactivity_context_share">Partager</string>
+    <string name="siteactivity_context_moreinfo">Plus d\'informations</string>
+    <string name="siteactivity_share_subject">Citation partagée via AndQuote.</string>
+    <string name="siteactivity_share_window_title">Partager</string>
+
+    <string name="quoteactivity_doesnotexist">Cette citation n\'existe pas.</string>
+
+</resources>
+
