@@ -35,6 +35,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private static SharedPreferences settings; 
     private OpenQuoteApi api;
     private GridView gridview;
+    private CustomAdapter adapter;
     ArrayList<View> buttons = new ArrayList<View>();
     
     private class ProgressListener implements OpenQuoteApi.ProgressListener {
@@ -86,7 +87,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
         this.gridview = new GridView(this);
         layout.addView(this.gridview);
-        this.gridview.setAdapter(new CustomAdapter());
+        this.adapter = new CustomAdapter();
+        this.gridview.setAdapter(this.adapter);
         this.gridview.setColumnWidth(200);
         this.gridview.setNumColumns(-1);
         
@@ -124,6 +126,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
     public void registerSite(OpenQuoteApi.Site site) {
         final Button button = new Button(this);
+        Log.d("AndQuote", site.name);
         button.setText(site.name);
         button.setTag(site.id);
         button.setOnClickListener(this);
@@ -146,6 +149,7 @@ public class MainActivity extends Activity implements OnClickListener {
             this.api.safeGet(new ProgressListener(), site.get_logo_url());
         }
         this.buttons.add(button);
+        this.adapter.notifyDataSetChanged();
     }
     
     public void onClick(View view) {
