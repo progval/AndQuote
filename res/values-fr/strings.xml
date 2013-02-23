@@ -25,7 +25,7 @@
     <string name="preferences_nav_quote_enable">Activée pour les sites sans image</string>
     <string name="preferences_nav_quote_enable_summary">Détermine si les boutons de navigation seront affichés pour les sites n\'affichant pas d\'image.</string>
 
-    <string name="siteactivity_loading_quotes">Chargement des citation. Veuillez patienter...</string>
+    <string name="siteactivity_loading_quotes">Chargement des citations. Veuillez patienter...</string>
 
     <string name="siteactivity_button_latest">Dernières</string>
     <string name="siteactivity_button_top">Top</string>
