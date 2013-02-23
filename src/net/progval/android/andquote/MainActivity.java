@@ -106,10 +106,15 @@ public class MainActivity extends Activity implements OnClickListener {
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.mainactivity_menu_settings:
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                intent = new Intent(MainActivity.this, SettingsActivity.class);
+                this.startActivity(intent);
+                return true;
+            case R.id.mainactivity_menu_about:
+                intent = new Intent(MainActivity.this, AboutActivity.class);
                 this.startActivity(intent);
                 return true;
             default:
