@@ -2,6 +2,7 @@ package net.progval.android.andquote;
 
 import java.net.MalformedURLException;
 import java.util.Iterator;
+import java.io.InputStream;
 
 import net.progval.android.andquote.utils.OpenQuoteApi;
 import android.app.Activity;
@@ -39,8 +40,8 @@ public class MainActivity extends Activity implements OnClickListener {
                 Toast.LENGTH_SHORT).show();
         }
 
-        public void onSuccess(String file) {
-            OpenQuoteApi.Site[] sites = OpenQuoteApi.Site.parse_sites(file);
+        public void onSuccess(InputStream stream) {
+            OpenQuoteApi.Site[] sites = OpenQuoteApi.Site.parse_sites(stream);
             for (int i=0; i<sites.length && sites[i]!=null; i++)
                 MainActivity.this.registerSite(sites[i]);
         }

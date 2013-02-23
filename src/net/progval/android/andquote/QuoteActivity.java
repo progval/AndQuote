@@ -1,6 +1,7 @@
 package net.progval.android.andquote;
 
 import net.progval.android.andquote.utils.OpenQuoteApi;
+import java.io.InputStream;
 import android.app.Activity;
 import android.util.Log;
 import android.text.Html;
@@ -23,30 +24,32 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.preference.PreferenceManager;
 import android.widget.TextView.OnEditorActionListener;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import org.msgpack.MessagePack;
+import org.msgpack.type.ArrayValue;
+import org.msgpack.type.Value;
+import org.msgpack.type.MapValue;
+import net.progval.android.andquote.utils.MsgPackUtils;
 
 public class QuoteActivity extends Activity implements OnClickListener {
     private static SharedPreferences settings; 
     private LinearLayout layout;
 
     private OpenQuoteApi api;
-    private SiteActivity.State state;
+    private OpenQuoteApi.State state;
     private OpenQuoteApi.Quote quote;
 
     private TextView contentview, scoreview;
     private WebView imageview;
     private LinearLayout comments, navigation;
     private EditText gotopage;
+    private static MessagePack messagePack = new MessagePack();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extra = this.getIntent().getExtras();
         QuoteActivity.settings = PreferenceManager.getDefaultSharedPreferences(this);
-        this.state = new SiteActivity.State();
+        this.state = new OpenQuoteApi.State();
         this.state.site_id = extra.getString("site_id");
         this.state.site_name = extra.getString("site_name");
         this.quote = OpenQuoteApi.Quote.unserialize(extra.getString("quote"));
@@ -148,17 +151,17 @@ public class QuoteActivity extends Activity implements OnClickListener {
                 dialog.dismiss();
                 Toast.makeText(QuoteActivity.this, status_message, Toast.LENGTH_LONG).show();
             }
-            public void onSuccess(String file) {
+            public void onSuccess(InputStream stream) {
                 try {
-                    JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
-                    if (!object.has("quote"))
+                    MapValue map = messagePack.read(stream).asMapValue();
+                    if (!MsgPackUtils.in(map, "quote"))
                         this.onFail(R.string.quoteactivity_doesnotexist);
                     else {
-                        OpenQuoteApi.Quote quote = new OpenQuoteApi.Quote((JSONObject) object.get("quote"));
+                        OpenQuoteApi.Quote quote = new OpenQuoteApi.Quote(MsgPackUtils.get(map, "quotes").asMapValue());
                         QuoteActivity.this.loadQuote(quote);
                     }
                 }
-                catch (JSONException e) {
+                catch (java.io.IOException e) {
                     e.printStackTrace();
                 }
                 dialog.dismiss();
@@ -198,19 +201,19 @@ public class QuoteActivity extends Activity implements OnClickListener {
             public void onFail(int status_message) {
                 Toast.makeText(QuoteActivity.this, status_message, Toast.LENGTH_LONG).show();
             }
-            public void onSuccess(String file) {
+            public void onSuccess(InputStream stream) {
                 try {
-                    JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
-                    OpenQuoteApi.Quote quote = new OpenQuoteApi.Quote((JSONObject) object.get("quote"));
+                    MapValue map = messagePack.read(stream).asMapValue();
+                    OpenQuoteApi.Quote quote = new OpenQuoteApi.Quote(MsgPackUtils.get(map, "quote").asMapValue());
                     QuoteActivity.this.setQuote(quote);
                     if (quote.getAuthor() != null)
                         this.scoreview.setText(quote.getScore() + " -- " + quote.getAuthor());
-                    QuoteActivity.this.renderComments(OpenQuoteApi.Comment.parseComments((JSONArray) object.get("comments")));
+                    QuoteActivity.this.renderComments(OpenQuoteApi.Comment.parseComments(MsgPackUtils.get(map, "comments").asArrayValue()));
                     if (quote.getImageUrl() != null) {
                         QuoteActivity.this.setImage(quote.getImageUrl());
                     }
                 }
-                catch (JSONException e) {
+                catch (java.io.IOException e) {
                     e.printStackTrace();
                 }
             }

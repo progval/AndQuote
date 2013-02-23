@@ -1,0 +1,6 @@
+[submodule "src/org/chenye/andfree/msgpack"]
+	path = src/org/chenye/andfree/msgpack
+	url = https://github.com/chzyer/msgpack-for-android
+[submodule "libs/msgpack"]
+	path = libs/msgpack
+	url = git@github.com:ProgVal/msgpack-java.git

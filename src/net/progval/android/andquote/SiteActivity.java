@@ -34,6 +34,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import net.progval.android.andquote.utils.MsgPackUtils;
+import java.io.InputStream;
+import org.msgpack.MessagePack;
+import org.msgpack.type.ArrayValue;
+import org.msgpack.type.Value;
+import org.msgpack.type.MapValue;
 
 public class SiteActivity extends ListActivity implements OnClickListener {
     private static SharedPreferences settings; 
@@ -47,6 +53,7 @@ public class SiteActivity extends ListActivity implements OnClickListener {
     private ArrayAdapter<String> quotesAdapter;
 
     private OpenQuoteApi.State state;
+    private static MessagePack messagePack = new MessagePack();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -172,18 +179,18 @@ public class SiteActivity extends ListActivity implements OnClickListener {
                 dialog.dismiss();
                 Toast.makeText(SiteActivity.this, status_message, Toast.LENGTH_LONG).show();
             }
-            public void onSuccess(String file) {
+            public void onSuccess(InputStream stream) {
                 try {
-                    JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
-                    JSONArray quotes = (JSONArray) object.get("quotes");
+                    MapValue map = messagePack.read(stream).asMapValue();
+                    ArrayValue quotes = MsgPackUtils.get(map, "quotes").asArrayValue();
 
-                    SiteActivity.this.resetState(new OpenQuoteApi.State((JSONObject) object.get("state")));
-                    for (int i=0; i<quotes.length(); i++) {
-                        JSONObject quote = (JSONObject) quotes.get(i);
+                    SiteActivity.this.resetState(new OpenQuoteApi.State(MsgPackUtils.get(map, "state").asMapValue()));
+                    for (int i=0; i<quotes.size(); i++) {
+                        MapValue quote = quotes.get(i).asMapValue();
                         SiteActivity.this.showQuote(new OpenQuoteApi.Quote(quote));
                     }
                 }
-                catch (JSONException e) {
+                catch (java.io.IOException e) {
                     e.printStackTrace();
                 }
                 dialog.dismiss();
@@ -199,12 +206,12 @@ public class SiteActivity extends ListActivity implements OnClickListener {
                 dialog.dismiss();
                 Toast.makeText(SiteActivity.this, status_message, Toast.LENGTH_LONG).show();
             }
-            public void onSuccess(String file) {
+            public void onSuccess(InputStream stream) {
                 try {
-                    JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
-                    api.safeGet(new QuoteRenderer(this.api), (String) object.get("url"));
+                    MapValue map = messagePack.read(stream).asMapValue();
+                    api.safeGet(new QuoteRenderer(this.api), MsgPackUtils.get(map, "url").asRawValue().getString());
                 }
-                catch (JSONException e) {
+                catch (java.io.IOException e) {
                     e.printStackTrace();
                 }
             }

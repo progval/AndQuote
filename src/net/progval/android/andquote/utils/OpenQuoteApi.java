@@ -12,23 +12,26 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import android.util.Log;
 import java.net.URLConnection;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import org.msgpack.MessagePack;
+import org.msgpack.type.ArrayValue;
+import org.msgpack.type.Value;
+import org.msgpack.type.MapValue;
+import java.util.Map;
 
 import net.progval.android.andquote.R;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
+import net.progval.android.andquote.utils.MsgPackUtils;
 
 public class OpenQuoteApi {
+    private static MessagePack messagePack = new MessagePack();
     String base_url;
     
     public interface ProgressListener {
         public void onProgressUpdate(int progress);
         public void onFail(int status_message);
-        public void onSuccess(String file);
+        public void onSuccess(InputStream stream);
     }
 
     public static class Site {
@@ -38,25 +41,23 @@ public class OpenQuoteApi {
             this.name = name;
         }
 
-        public static Site[] parse_sites(String file) {
+        public static Site[] parse_sites(InputStream stream) {
             Site[] sites = {};
-            JSONArray object;
+            ArrayValue objects;
+            MapValue object;
             try {
-                object = (JSONArray) new JSONTokener(file).nextValue();
-            } catch (JSONException e) {
+                objects = messagePack.read(stream).asArrayValue();
+            }
+            catch (java.io.IOException e) {
                 e.printStackTrace();
                 return sites;
             }
-            sites = new Site[object.length()];
+            sites = new Site[objects.size()];
 
-            for (int i=0; i<object.length(); i++) {
-                try {
-                    JSONObject site = (JSONObject) object.get(i);
-                    sites[i] = new Site((String) site.get("id"),
-                            (String) site.get("name"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            for (int i=0; i<objects.size(); i++) {
+                object = objects.get(i).asMapValue();
+                sites[i] = new Site(MsgPackUtils.get(object, "id").asRawValue().getString(),
+                        MsgPackUtils.get(object, "name").asRawValue().getString());
             }
             return sites;
         }
@@ -70,16 +71,11 @@ public class OpenQuoteApi {
         public boolean previous=false, next=false, gotopage=false;
 
         public State() {}
-        public State(JSONObject object) {
-            try {
-                this.previous = ((Boolean) object.get("previous")).booleanValue();
-                this.next = ((Boolean) object.get("next")).booleanValue();
-                this.gotopage = ((Boolean) object.get("gotopage")).booleanValue();
-                this.page = ((Integer) object.get("page")).intValue();
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
+        public State(MapValue map) {
+            this.previous = MsgPackUtils.get(map, "previous").asBooleanValue().getBoolean();
+            this.next = MsgPackUtils.get(map, "next").asBooleanValue().getBoolean();
+            this.gotopage = MsgPackUtils.get(map, "gotopage").asBooleanValue().getBoolean();
+            this.page = MsgPackUtils.get(map, "page").asIntegerValue().getInt();
         }
         public void update(State other) {
             this.previous = other.previous;
@@ -125,36 +121,31 @@ public class OpenQuoteApi {
             this.url = url;
             this.image_url = image_url;
         }
-        public Quote(JSONObject object) {
-            try {
-                // Be sure to replace new lines after replacing < and >
-                this.id = ((Integer) object.get("id")).intValue();
-                this.content = ((String) object.get("content")).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br />");
-                if (object.has("note")) {
-                    this.note = ((Integer) object.get("note")).intValue();
-                    this.scoretype = Quote.ScoreType.NOTE;
-                }
-                else if (object.has("up") && object.has("down")) {
-                    this.up = ((Integer) object.get("up")).intValue();
-                    this.down = ((Integer) object.get("down")).intValue();
-                    this.scoretype = Quote.ScoreType.UPDOWN;
-                }
-                else {
-                    this.scoretype = Quote.ScoreType.NONE;
-                }
-                if (object.has("author"))
-                    this.author = (String) object.get("author");
-                if (object.has("date") && object.get("date") != null)
-                    this.date = (String) object.get("date");
-                if (object.has("url")) {
-                    this.url = (String) object.get("url");
-                }
-                if (object.has("image")) {
-                    this.image_url = (String) object.get("image");
-                }
+        public Quote(MapValue map) {
+            // Be sure to replace new lines after replacing < and >
+            this.id = MsgPackUtils.get(map, ("id")).asIntegerValue().getInt();
+            this.content = MsgPackUtils.get(map, ("content")).asRawValue().getString().replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br />");
+            if (MsgPackUtils.in(map, "note")) {
+                this.note = MsgPackUtils.get(map, ("note")).asIntegerValue().getInt();
+                this.scoretype = Quote.ScoreType.NOTE;
             }
-            catch (JSONException e) {
-                e.printStackTrace();
+            else if (MsgPackUtils.in(map, "up") && MsgPackUtils.in(map, "down")) {
+                this.up = MsgPackUtils.get(map, ("up")).asIntegerValue().getInt();
+                this.down = MsgPackUtils.get(map, ("down")).asIntegerValue().getInt();
+                this.scoretype = Quote.ScoreType.UPDOWN;
+            }
+            else {
+                this.scoretype = Quote.ScoreType.NONE;
+            }
+            if (MsgPackUtils.in(map, "author"))
+                this.author = MsgPackUtils.get(map, ("author")).asRawValue().getString();
+            if (MsgPackUtils.in(map, "date") && MsgPackUtils.get(map, ("date")) != null)
+                this.date = MsgPackUtils.get(map, ("date")).asRawValue().getString();
+            if (MsgPackUtils.in(map, "url")) {
+                this.url = MsgPackUtils.get(map, ("url")).asRawValue().getString();
+            }
+            if (MsgPackUtils.in(map, "image")) {
+                this.image_url = MsgPackUtils.get(map, ("image")).asRawValue().getString();
             }
         }
         public int getId() {
@@ -224,28 +215,17 @@ public class OpenQuoteApi {
     public static class Comment {
         private String content, author;
         private Comment[] replies;
-        public Comment(JSONObject object) {
-            try {
-                this.content = (String) object.get("content");
-                this.author = (String) object.get("author");
-                JSONArray replies = (JSONArray) object.get("replies");
-                this.replies = Comment.parseComments(replies);
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
+        public Comment(MapValue map) {
+            this.content = MsgPackUtils.get(map, "content").asRawValue().getString();
+            this.author = MsgPackUtils.get(map, "author").asRawValue().getString();
+            ArrayValue replies = MsgPackUtils.get(map, "replies").asArrayValue();
+            this.replies = Comment.parseComments(replies);
         }
-        public static Comment[] parseComments(JSONArray array) {
-            try {
-                Comment[] comments = new Comment[array.length()];
-                for (int i=0; i<array.length(); i++)
-                    comments[i] = new Comment((JSONObject) array.get(i));
-                return comments;
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-                return new Comment[0];
-            }
+        public static Comment[] parseComments(ArrayValue array) {
+            Comment[] comments = new Comment[array.size()];
+            for (int i=0; i<array.size(); i++)
+                comments[i] = new Comment(array.get(i).asMapValue());
+            return comments;
         }
         public String getContent() {
             return this.content;
@@ -264,7 +244,7 @@ public class OpenQuoteApi {
         private Writer writer;
         private boolean success = false;
         private int status_message;
-        private BufferedReader stream;
+        private InputStream stream;
 
         public Downloader(OpenQuoteApi.ProgressListener progress_listener) {
             this.progress_listener = progress_listener;
@@ -279,14 +259,7 @@ public class OpenQuoteApi {
             try {
                 URLConnection connection = url[0].openConnection();
                 connection.connect();
-                stream = new BufferedReader(new InputStreamReader(url[0].openStream()));
-                
-                while ((count = this.stream.read(data)) != -1) {
-                    total += count;
-                    this.publishProgress(total*100);
-                    this.writer.write(data, 0, count);
-                    
-                }
+                this.stream = url[0].openStream();
                 this.success = true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -301,7 +274,7 @@ public class OpenQuoteApi {
         
         protected void onPostExecute(Integer foo) {
             if (this.success)
-                this.progress_listener.onSuccess(this.writer.toString());
+                this.progress_listener.onSuccess(this.stream);
             else
                 this.progress_listener.onFail(this.status_message);
         }
@@ -319,6 +292,11 @@ public class OpenQuoteApi {
     
     public void get(OpenQuoteApi.ProgressListener progress_listener, String url)
             throws MalformedURLException {
+        if (url.indexOf('?') == -1)
+            url += "?";
+        else
+            url += "&";
+        url += "format=msgpack";
         new OpenQuoteApi.Downloader(progress_listener).execute(new URL(this.base_url + url));
     }
     public void safeGet(OpenQuoteApi.ProgressListener progress_listener, String url) {
@@ -331,7 +309,7 @@ public class OpenQuoteApi {
     }
     public void getURL(OpenQuoteApi.ProgressListener progress_listener, OpenQuoteApi.State state) {
         this.safeGet(progress_listener,
-                String.format("/state/url?site=%s&mode=%s&type=%s&page=%s",
+                String.format("/state/url?site=%s&mode=%s&type=%s&page=%s&format=msgpack",
                     state.site_id, state.mode, state.type, state.page));
     }
 }
