@@ -157,24 +157,6 @@ public class OpenQuoteApi {
                 e.printStackTrace();
             }
         }
-        public static Quote[] parse_quotes(String file, State state) {
-            Quote[] parsed_quotes = {};
-            try {
-                JSONObject object = (JSONObject) new JSONTokener(file).nextValue();
-                JSONArray quotes = (JSONArray) object.get("quotes");
-                parsed_quotes = new Quote[quotes.length()];
-
-                state.update(new OpenQuoteApi.State((JSONObject) object.get("state")));
-                for (int i=0; i<quotes.length(); i++) {
-                    JSONObject quote = (JSONObject) quotes.get(i);
-                    parsed_quotes[i] = new OpenQuoteApi.Quote(quote);
-                }
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return parsed_quotes;
-        }
         public int getId() {
             return this.id;
         }
