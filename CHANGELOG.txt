@@ -1,3 +1,6 @@
+0.3.3:
+* Add AndQuote version to the User-agent.
+
 0.3.2: 05eb7f4fa11b819324cfc74054a1ae8c393a0daf
 * Fix compilation. Does not change anything for those who use the official APK.
 
