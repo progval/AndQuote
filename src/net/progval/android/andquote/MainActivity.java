@@ -28,6 +28,8 @@ import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.MenuItem;
 import android.view.MenuInflater;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -91,6 +93,14 @@ public class MainActivity extends Activity implements OnClickListener {
         this.gridview.setAdapter(this.adapter);
         this.gridview.setColumnWidth(200);
         this.gridview.setNumColumns(-1);
+
+        String useragent = "AndQuote";
+        try {
+            useragent += "/" + this.getPackageManager().getPackageInfo(this.getPackageName(), 0).versionName;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+        }
+        System.setProperty("http.agent", useragent + " " + System.getProperty("http.agent"));
         
         this.api = new OpenQuoteApi(this.settings.getString("api.url", ""));
         try {
