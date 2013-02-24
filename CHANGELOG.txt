@@ -1,0 +1,22 @@
+0.3.2: 05eb7f4fa11b819324cfc74054a1ae8c393a0daf
+* Fix compilation. Does not change anything for those who use the official APK.
+
+0.3.1: 3326cfec8314182337170eccfefd960db8473484
+* Fix bug where websites list where not always displayed.
+
+0.3: 3a46b830db1996af2b5cb7647238c4f81f6b0b9e
+* Fix scrolling in quotes view.
+* Add support for websites like xkcd.
+* Add 'copy quote URL' to quote context menu.
+* Add 'open quote in browser' to quote context menu.
+* Add navigation controls to quote view.
+* Use MessagePack instead of JSON => faster (cpu & bandwidth).
+* Display sites in a grid.
+* Add an image above site names.
+* Add French translation.
+
+0.2: 47de1ec00143ac4dc4842aac3f3aba4d43f8d1fa
+* Add the 'more info' context menu.
+
+0.1: d821160f8126e80f5b51f2c6d69a22093d1f8557
+* Initial release.
