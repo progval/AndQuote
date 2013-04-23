@@ -180,6 +180,7 @@ public class QuoteActivity extends Activity implements OnClickListener {
     public void loadQuote(OpenQuoteApi.Quote quote) {
         this.quote = quote;
         this.contentview.setText(Html.fromHtml(this.quote.getContent()));
+        this.gotopage.setText(String.format("%d", this.quote.getId()));
         this.scoreview.setText(this.quote.getScore());
         this.setTitle(this.state.site_name + " - " + this.quote.getId());
         if (quote.getImageUrl() != null) {
