@@ -157,7 +157,7 @@ public class QuoteActivity extends Activity implements OnClickListener {
                     if (!MsgPackUtils.in(map, "quote"))
                         this.onFail(R.string.quoteactivity_doesnotexist);
                     else {
-                        OpenQuoteApi.Quote quote = new OpenQuoteApi.Quote(MsgPackUtils.get(map, "quotes").asMapValue());
+                        OpenQuoteApi.Quote quote = new OpenQuoteApi.Quote(MsgPackUtils.get(map, "quote").asMapValue());
                         QuoteActivity.this.loadQuote(quote);
                     }
                 }
