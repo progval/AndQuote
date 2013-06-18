@@ -312,7 +312,7 @@ public class OpenQuoteApi {
     }
     public void getURL(OpenQuoteApi.ProgressListener progress_listener, OpenQuoteApi.State state) {
         this.safeGet(progress_listener,
-                String.format("/state/url?site=%s&mode=%s&type=%s&page=%s&format=msgpack",
+                String.format("/state/url/?site=%s&mode=%s&type=%s&page=%s&format=msgpack",
                     state.site_id, state.mode, state.type, state.page));
     }
 }
