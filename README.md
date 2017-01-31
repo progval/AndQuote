@@ -30,9 +30,3 @@ Non-signed binary:
 ant debug
 ant installd
 ```
-
-# Donate
-
-I hate Java, writting this application has been painful to me ;)
-
-Bitcoin: 1LC9fN12dgb9jLTQSupJGAxc4v2WjKAVud
